@@ -1,0 +1,10 @@
+server:
+  port: 8081
+
+mqtt:
+  username: publishAdmin
+  password: public
+  serverURIs:
+    - tcp://127.0.0.1:1883
+  qos: 1
+  keepAlive: 60
