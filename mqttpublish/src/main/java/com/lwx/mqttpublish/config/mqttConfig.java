@@ -4,12 +4,17 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.endpoint.MessageProducerSupport;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
 
 import java.util.List;
 
@@ -20,8 +25,8 @@ public class mqttConfig {
     private String username;
     @Value("${mqtt.password}")
     private String password;
-    @Value("${mqtt.serverURIs}")
-    private List<String> serverURIs;
+    @Value("${mqtt.port}")
+    private String port;
     @Value("${mqtt.qos}")
     private int qos;
     @Value("${mqtt.keepAlive}")
@@ -32,7 +37,7 @@ public class mqttConfig {
         MqttConnectOptions options = new MqttConnectOptions();
         options.setUserName(username);
         options.setPassword(password.toCharArray());
-        options.setServerURIs((String[]) serverURIs.toArray());
+        options.setServerURIs(new String[] {port});
         options.setKeepAliveInterval(keepAlive);
         /**
          * 设置服务器和客户端在重新启动或重新连接时记住状态
@@ -72,17 +77,20 @@ public class mqttConfig {
      * 4. 配置发送数据的服务质量 0~2
      * 5. 配置订阅通道
      */
+    @Bean
     public MessageProducerSupport mqttInbound() {
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(
                 "noticeSub_"+System.currentTimeMillis(),
                 mqttClientFactory(),
-                "/com/lwx/boot/qq"
+                "/com/lwx/boot/qq/#"
                 );
         // 设置连接超长时间
         adapter.setCompletionTimeout(3000);
         // 设置转换器 默认的
         DefaultPahoMessageConverter messageConverter = new DefaultPahoMessageConverter();
         adapter.setConverter(messageConverter);
+        // 设置数据处理通道
+        adapter.setOutputChannel(mqttInChannel());
         /**
          * 设置服务质量
          * 0 最多一次，数据可能丢失
@@ -96,9 +104,29 @@ public class mqttConfig {
     /**
      * 配置入站的消息通道
      */
-   /* public MessageChannel mqttInChannel() {
+    @Bean
+    public MessageChannel mqttInChannel() {
+        return new DirectChannel();
+    }
 
-    }*/
+    /**
+     * 配置Inbound入站，消费者的消息处理器
+     * 1. 使用@ServiceActivator注解，表明所修饰的方法用于消息处理
+     * 2. 使用inputChannel值，表明从指定通道中取值
+     * @return
+     */
+    @Bean
+    @ServiceActivator(inputChannel = "mqttInChannel")
+    public MessageHandler mqttInDataHandler() {
+        return message -> {
+            String topic = message.getHeaders().get("mqtt_receivedTopic").toString();
+            String jsonString = message.getPayload().toString();
+            System.out.println(topic);
+            System.out.println(jsonString);
+        };
+    }
+
+
 
 
 }
