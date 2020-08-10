@@ -42,10 +42,10 @@ public class UserServer {
                 Predicate email = criteriaBuilder.like(root.get("email"), user.getEmail());
                 Predicate nickName = criteriaBuilder.equal(root.get("nickName"), user.getNickName());
 
-                Join<Object, Object>  job= root.join("job", JoinType.INNER);
-                 Predicate name = criteriaBuilder.equal(job.get("name").as(String.class), user.getJob().getName());
+//                 Join<Object, Object>  job= root.join("job", JoinType.INNER);
+//                 Predicate name = criteriaBuilder.equal(job.get("name").as(String.class), user.getJob().getName());
 
-                Predicate predicate = criteriaBuilder.and(email, nickName, name);
+                Predicate predicate = criteriaBuilder.and(email, nickName);
                 return predicate;
             }
         };
@@ -53,6 +53,10 @@ public class UserServer {
         User user1 = userRepository.findOne(userSpecification).orElse(new User());
         users.add(user1);
         return users;
+    }
+
+    public Boolean save(User u) {
+        return Optional.ofNullable(userRepository.save(u).getId()).isPresent();
     }
 
 }

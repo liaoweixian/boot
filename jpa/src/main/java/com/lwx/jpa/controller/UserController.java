@@ -43,7 +43,27 @@ public class UserController {
         user.setEmail("zhengjie%");
         Job job = new Job();
         job.setName("人事专员");
-        user.setJob(job);
+        // user.setJob(job);
         return userServer.getUserListSpecification(user);
+    }
+
+    @GetMapping("/save")
+    @ResponseBody
+    public Boolean save() {
+        User user = new User();
+        user.setUsername("admin");
+        user.setNickName("管理员");
+        user.setSex("男");
+        user.setAvatar_id(null);
+        user.setEmail("zhengjie@tom.com");
+        user.setPhone("18888888888");
+        user.setEnabled(true);
+        user.setPassword("$2a$10$duBEr2r8.fUkhlmpN5OgOuhPLwBXnQmbHV5n4PtVwZfdGm64k2KhS");
+        Job job = new Job();
+        job.setName("全栈开发");
+        job.setSort(2l);
+        job.setEnabled(true);
+        user.setJob(job);
+        return userServer.save(user);
     }
 }

@@ -1,5 +1,7 @@
 package com.lwx.jpa.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -51,9 +53,19 @@ public class User implements Serializable {
 
     private Long deptId;
 
+    /**
+     * @JsonIgnoreProperties(value = "user") 用于阻止双向关联，序列化问题导致死循环，
+     * 用于阻止死循环 value 指定的是关联对象里面的 User对象（也就是自己）清除掉 或者阻止序列化
+     *
+     * 可以重写toString 直接清除掉 但前对象包含的关联对象中的自己
+     */
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "job_id")
+    @JoinColumn(name = "job_id", referencedColumnName = "id")
+    @JsonIgnoreProperties(value = "user")
     private Job job;
 
+//    @OneToOne
+//    @JoinColumn(name = "dept_id")
+//    private Dept dept;
 
 }

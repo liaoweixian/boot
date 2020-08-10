@@ -1,5 +1,6 @@
 package com.lwx.jpa.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,4 +33,8 @@ public class Job implements Serializable {
 
     @CreationTimestamp
     private Timestamp createTime;
+
+    @OneToOne(mappedBy = "job")
+    @JsonIgnoreProperties(value = "job")
+    private User user;
 }
