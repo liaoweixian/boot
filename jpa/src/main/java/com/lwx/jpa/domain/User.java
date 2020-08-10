@@ -47,11 +47,13 @@ public class User implements Serializable {
 
     private Date lastPasswordResetTime;
 
-    private Long jobId;
+    // private Long jobId;
 
     private Long deptId;
 
-
+    @OneToOne
+    @JoinColumn(name = "job_id")
+    private Job job;
 
 
 }

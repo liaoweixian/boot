@@ -1,5 +1,6 @@
 package com.lwx.jpa.controller;
 
+import com.lwx.jpa.domain.Job;
 import com.lwx.jpa.domain.User;
 import com.lwx.jpa.server.UserServer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,16 @@ public class UserController {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         PageRequest page = PageRequest.of(0, 10, sort);
         return userServer.getUserPage(page);
+    }
+
+    @GetMapping("/getUserListSpecification")
+    @ResponseBody
+    public List<User> getUserListSpecification() {
+        User user = new User();
+        user.setNickName("管理员");
+        user.setEmail("zhengjie%");
+        Job job = new Job();
+        job.setName("人事专员");
+        return userServer.getUserListSpecification(user);
     }
 }
