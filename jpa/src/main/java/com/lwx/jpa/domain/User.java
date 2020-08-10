@@ -51,7 +51,7 @@ public class User implements Serializable {
 
     private Long deptId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "job_id")
     private Job job;
 

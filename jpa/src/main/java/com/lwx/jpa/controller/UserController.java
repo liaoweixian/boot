@@ -43,6 +43,7 @@ public class UserController {
         user.setEmail("zhengjie%");
         Job job = new Job();
         job.setName("人事专员");
+        user.setJob(job);
         return userServer.getUserListSpecification(user);
     }
 }

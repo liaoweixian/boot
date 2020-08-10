@@ -42,10 +42,10 @@ public class UserServer {
                 Predicate email = criteriaBuilder.like(root.get("email"), user.getEmail());
                 Predicate nickName = criteriaBuilder.equal(root.get("nickName"), user.getNickName());
 
-               /* Path job = root.get("job");
-                Predicate name = criteriaBuilder.equal(job.get("name"), user.getJob().getName());*/
+                Join<Object, Object>  job= root.join("job", JoinType.INNER);
+                 Predicate name = criteriaBuilder.equal(job.get("name").as(String.class), user.getJob().getName());
 
-                Predicate predicate = criteriaBuilder.and(email, nickName);
+                Predicate predicate = criteriaBuilder.and(email, nickName, name);
                 return predicate;
             }
         };
