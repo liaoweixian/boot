@@ -1,4 +1,4 @@
-package com.lwx.mqttsubscribe.config;
+package com.lwx.mqttpublish.config;
 
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.messaging.handler.annotation.Header;

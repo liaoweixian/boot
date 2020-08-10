@@ -1,7 +1,7 @@
-package com.lwx.mqttsubscribe.controller;
+package com.lwx.mqttpublish.controller;
 
-import com.lwx.mqttsubscribe.config.SendMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.lwx.mqttpublish.config.SendMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 public class PublishController {
 
     @Resource
-    private  SendMessage sendMessage;
+    private SendMessage sendMessage;
 
     @GetMapping("/demo")
     @ResponseBody

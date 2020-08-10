@@ -4,19 +4,18 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.endpoint.MessageProducerSupport;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
-import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
-import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
-import org.springframework.messaging.Message;
+import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
 
-import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class mqttConfig {
@@ -68,65 +67,37 @@ public class mqttConfig {
         return mqttFactory;
     }
 
-    /**
-     * 配置client,监听的topic  订阅主题
-     * 配置Inbound入站，消费者基本连接配置
-     * 1. 通过DefaultMqttPahoClientFactory 初始化入站通道适配器
-     * 2. 配置超时时长，默认30000毫秒
-     * 3. 配置Paho消息转换器
-     * 4. 配置发送数据的服务质量 0~2
-     * 5. 配置订阅通道
-     */
     @Bean
-    public MessageProducerSupport mqttInbound() {
-        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(
-                "noticeSub_"+System.currentTimeMillis(),
-                mqttClientFactory(),
-                "/com/lwx/boot/qq/#"
-                );
-        // 设置连接超长时间
-        adapter.setCompletionTimeout(3000);
-        // 设置转换器 默认的
-        DefaultPahoMessageConverter messageConverter = new DefaultPahoMessageConverter();
-        adapter.setConverter(messageConverter);
-        // 设置数据处理通道
-        adapter.setOutputChannel(mqttInChannel());
-        /**
-         * 设置服务质量
-         * 0 最多一次，数据可能丢失
-         * 1 至少一次，数据可能重复
-         * 2 只有一次，有且只有一次，最耗性能
-         */
-        adapter.setQos(1);
-        return adapter;
-    }
-
-    /**
-     * 配置入站的消息通道
-     */
-    @Bean
-    public MessageChannel mqttInChannel() {
+    public MessageChannel outChannel() {
         return new DirectChannel();
     }
 
+    @Bean
+    // @ServiceActivator(inputChannel = "outChannel")
+    public MqttPahoMessageHandler outbound() {
+        // // 初始化出站通道适配器，使用的是Eclipse Paho MQTT客户端库
+        MqttPahoMessageHandler messageHandler =
+                new MqttPahoMessageHandler("subscribe"+System.currentTimeMillis(),
+                        mqttClientFactory());
+        // // 设置异步发送，默认是false(发送时阻塞)
+        messageHandler.setAsync(true);
+        // 设置消息质量
+        messageHandler.setDefaultQos(1);
+        return messageHandler;
+    }
+
     /**
-     * 配置Inbound入站，消费者的消息处理器
-     * 1. 使用@ServiceActivator注解，表明所修饰的方法用于消息处理
-     * 2. 使用inputChannel值，表明从指定通道中取值
+     * 使用dsl  Integration 进行整合 , 把通道和适配器进行绑定， 不需要使用你ServiceActivator
      * @return
      */
     @Bean
-    @ServiceActivator(inputChannel = "mqttInChannel")
-    public MessageHandler mqttInDataHandler() {
-        return message -> {
-            String topic = message.getHeaders().get("mqtt_receivedTopic").toString();
-            String jsonString = message.getPayload().toString();
-            System.out.println(topic);
-            System.out.println(jsonString);
-        };
+    public IntegrationFlow outFlow() {
+        return IntegrationFlows.from(outChannel())
+                .channel(MessageChannels.executor(new ThreadPoolExecutor(20,200,
+                        60000L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>()
+                        )))
+                .handle(outbound())
+                .get();
     }
-
-
-
 
 }
