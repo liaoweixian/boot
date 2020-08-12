@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Set;
 
 @Table(name = "user")
 @Entity
@@ -67,5 +68,22 @@ public class User implements Serializable {
     @OneToOne
     @JoinColumn(name = "dept_id", referencedColumnName = "id")
     private Dept dept;
+
+    /**
+     * 1、joinColumns 代表关联当前类，带注解的类
+     * 2、inverseJoinColumns 代表被关联的类
+     * 3、这里的 @JoinColumn的name 指定的是 user_roles 的字段 中间表的字段 referencedColumnName 代表是关联表的字段
+     * 4、@ManyToMany的 fetch 指的是加载策略
+     *  -- FetchType.EAGER及时加载
+     *  -- FetchType.LAZY 懒加载，使用时加载
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles", joinColumns = {
+        @JoinColumn(name = "user_id", referencedColumnName = "id")
+    }, inverseJoinColumns = {
+            @JoinColumn(name = "role_id", referencedColumnName = "id")
+    })
+    private Set<Role> roles;
+
 
 }
