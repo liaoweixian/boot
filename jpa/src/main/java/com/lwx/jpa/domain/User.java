@@ -51,7 +51,7 @@ public class User implements Serializable {
 
     // private Long jobId;
 
-    private Long deptId;
+    // private Long deptId;
 
     /**
      * @JsonIgnoreProperties(value = "user") 用于阻止双向关联，序列化问题导致死循环，
@@ -60,12 +60,12 @@ public class User implements Serializable {
      * 可以重写toString 直接清除掉 但前对象包含的关联对象中的自己
      */
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "job_id", referencedColumnName = "id")
+    @JoinColumn(name = "job_id")
     @JsonIgnoreProperties(value = "user")
     private Job job;
 
-//    @OneToOne
-//    @JoinColumn(name = "dept_id")
-//    private Dept dept;
+    @OneToOne
+    @JoinColumn(name = "dept_id", referencedColumnName = "id")
+    private Dept dept;
 
 }

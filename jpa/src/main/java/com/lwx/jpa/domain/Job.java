@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Table(name = "job")
 @Entity
@@ -34,7 +35,10 @@ public class Job implements Serializable {
     @CreationTimestamp
     private Timestamp createTime;
 
-    @OneToOne(mappedBy = "job")
+    /**
+     * 一个职位对应多个 用户 一对多
+     */
+    @OneToMany(mappedBy = "job")
     @JsonIgnoreProperties(value = "job")
-    private User user;
+    private List<User> user;
 }

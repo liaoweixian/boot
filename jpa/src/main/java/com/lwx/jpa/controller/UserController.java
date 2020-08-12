@@ -63,7 +63,7 @@ public class UserController {
         job.setName("全栈开发");
         job.setSort(2l);
         job.setEnabled(true);
-        user.setJob(job);
+        // user.setJob(job);
         return userServer.save(user);
     }
 }
