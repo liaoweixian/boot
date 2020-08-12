@@ -10,7 +10,7 @@
         <module>jpasave</module>
         <module>mqttpublish</module>
         <module>mqttsubscribe</module>
-
+        <module>mapstruct</module>
     </modules>
 
 
