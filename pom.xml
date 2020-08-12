@@ -7,8 +7,10 @@
     <modules>
         <module>demo</module>
         <module>jpa</module>
+        <module>jpasave</module>
         <module>mqttpublish</module>
         <module>mqttsubscribe</module>
+
     </modules>
 
 
