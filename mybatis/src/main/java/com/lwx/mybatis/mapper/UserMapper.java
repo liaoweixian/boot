@@ -1,5 +1,6 @@
 package com.lwx.mybatis.mapper;
 
+import com.lwx.mybatis.domain.Nature;
 import com.lwx.mybatis.domain.User;
 
 import java.util.List;
@@ -15,5 +16,11 @@ public interface UserMapper {
     void update(User user);
 
     void delete(Long id);
+
+    List<User> getjoinAll();
+
+    List<User> getjoinAllT();
+
+    Nature getNature(Long id);
 
 }

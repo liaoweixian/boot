@@ -25,4 +25,7 @@ public class User implements Serializable {
     private String passWord;
     private UserSexEnum userSex;
     private String nickName;
+    private Long natureId;
+    private Nature nature;
+
 }

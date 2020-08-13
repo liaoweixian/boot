@@ -6,6 +6,7 @@ import com.lwx.mybatis.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 @RequestMapping("/demo")
 public class DemoController {
 
-    @Autowired
+    @Resource
     private UserMapper userMapper;
 
     @GetMapping("/insert")
@@ -39,5 +40,17 @@ public class DemoController {
             userMapper.update(user);
         }
         return user;
+    }
+
+    @GetMapping("/getjoinAll")
+    @ResponseBody
+    public List<User> getjoinAll() {
+        return userMapper.getjoinAll();
+    }
+
+    @GetMapping("/getjoinAllT")
+    @ResponseBody
+    public List<User> getjoinAllT() {
+        return userMapper.getjoinAllT();
     }
 }

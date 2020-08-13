@@ -9,16 +9,57 @@
         <result column="pass_word" property="passWord" jdbcType="VARCHAR"/>
         <result column="user_sex" property="userSex" javaType="com.lwx.mybatis.enums.UserSexEnum"/>
         <result column="nick_name" property="nickName" jdbcType="VARCHAR"/>
+        <result column="nature_id" property="natureId" jdbcType="BIGINT"/>
+        <association property="nature" javaType="com.lwx.mybatis.domain.Nature">
+            <id column="id" property="id"/>
+            <result column="type" property="type"/>
+        </association>
     </resultMap>
+
+    <resultMap id="joinResultMap" type="com.lwx.mybatis.domain.User">
+        <id column="id" property="id"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="pass_word" property="passWord" jdbcType="VARCHAR"/>
+        <result column="user_sex" property="userSex" javaType="com.lwx.mybatis.enums.UserSexEnum"/>
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR"/>
+        <result column="nature_id" property="natureId" jdbcType="BIGINT"/>
+        <!--关联嵌套查询 一个对象-->
+        <association property="nature" column="nature_id" javaType="com.lwx.mybatis.domain.Nature" select="getNature"/>
+    </resultMap>
+
     <sql id="base_column_list">
-        id, user_name, pass_word, user_sex, nick_name
+        id, user_name, pass_word, user_sex, nick_name, nature_id
     </sql>
+
+    <select id="getNature" resultType="com.lwx.mybatis.domain.Nature">
+        select * from nature where id = #{id}
+    </select>
+
+    <select id="getjoinAllT" resultMap="joinResultMap">
+        select
+        <include refid="base_column_list"/>
+        from users
+    </select>
+    
+    <select id="getjoinAll" resultMap="baseResultMap">
+        SELECT
+            u.id,
+            u.user_name,
+            u.pass_word,
+            u.user_sex,
+            u.nick_name,
+            u.nature_id,
+            n.id,
+            n.type
+        FROM users as u
+        left join nature as n on u.nature_id = n.id
+    </select>
     <select id="getAll" resultMap="baseResultMap">
         select
         <include refid="base_column_list"/>
         from users
     </select>
-    <select id="getOne" parameterType="Long" resultMap="baseResultMap">
+    <select id="getOne" parameterType="java.lang.Long" resultMap="baseResultMap">
         select
         <include refid="base_column_list"/>
         from users
