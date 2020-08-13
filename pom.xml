@@ -11,6 +11,7 @@
         <module>mqttpublish</module>
         <module>mqttsubscribe</module>
         <module>mapstruct</module>
+        <module>mybatis</module>
     </modules>
 
 
