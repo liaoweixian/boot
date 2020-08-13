@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lwx.mybatis.mapper.UserMapper">
+    <resultMap id="baseResultMap" type="com.lwx.mybatis.domain.User">
+        <id column="id" property="id"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="pass_word" property="passWord" jdbcType="VARCHAR"/>
+        <result column="user_sex" property="userSex" javaType="com.lwx.mybatis.enums.UserSexEnum"/>
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="base_column_list">
+        id, user_name, pass_word, user_sex, nick_name
+    </sql>
+    <select id="getAll" resultMap="baseResultMap">
+        select
+        <include refid="base_column_list"/>
+        from users
+    </select>
+    <select id="getOne" parameterType="Long" resultMap="baseResultMap">
+        select
+        <include refid="base_column_list"/>
+        from users
+        WHERE id = #{id}
+    </select>
+    <insert id="insert" parameterType="com.lwx.mybatis.domain.User">
+        insert into users(user_name,pass_word,user_sex) values(#{userName}, #{passWord}, #{userSex})
+    </insert>
+    <update id="update" parameterType="com.lwx.mybatis.domain.User">
+        update
+            users
+        set
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="passWord  != null">pass_word = #{passWord},</if>
+            nick_name = #{nickName}
+        where
+            id = #{id}
+    </update>
+    <delete id="delete" parameterType="Long">
+        delete  from
+            users
+        where
+            id = #{id}
+    </delete>
+</mapper>
