@@ -7,10 +7,11 @@
         <groupId>com.lwx</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+
     <groupId>com.lwx</groupId>
-    <artifactId>mybatis</artifactId>
+    <artifactId>mybatisplus</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>mybatis</name>
+    <name>mybatisplus</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -18,10 +19,17 @@
     </properties>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.3</version>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
