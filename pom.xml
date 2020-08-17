@@ -12,6 +12,7 @@
         <module>mqttsubscribe</module>
         <module>mapstruct</module>
         <module>mybatis</module>
+        <module>mybatisplus</module>
     </modules>
 
 
