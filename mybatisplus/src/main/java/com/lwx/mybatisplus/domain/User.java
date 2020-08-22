@@ -4,16 +4,20 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+/**
+ * extends Model  AR模式
+ */
 @Data
 // 指定原型对应的数据库表
 @TableName(value = "user")
-public class User implements Serializable {
+public class User extends Model<User> implements Serializable {
     /**
      * IdType:
      *  AUTO: 数据库自增长

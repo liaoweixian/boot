@@ -10,3 +10,8 @@ logging:
     com.lwx.mybatisplus.mapper: trace
   pattern:
     console:'%p%m%n'
+mybatis-plus:
+  mapper-locations:
+    - classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+  type-aliases-package: com.lwx.mybatisplus.domain
