@@ -8,10 +8,14 @@ mybatis-plus:
   mapper-locations:
     - classpath:mybatis/mapper/*.xml
   type-aliases-package: com.lwx.mybatisplus2.domain
+  global-config:
+    db-config: #逻辑删除 配置 全局配置
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 
 logging:
   level:
     root: warn
-    com.lwx.mybatisplus.mapper: trace
+    com.lwx.mybatisplus2.mapper: trace
   pattern:
     console:'%p%m%n'

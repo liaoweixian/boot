@@ -3,5 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lwx.mybatisplus2.mapper.UserMapper">
-
+    <select id="mySelectList" resultType="com.lwx.mybatisplus2.domain.User">
+        select * from user ${ew.customSqlSegment}
+    </select>
 </mapper>
